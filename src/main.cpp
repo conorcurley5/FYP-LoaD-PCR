@@ -22,7 +22,7 @@ void setup() {
     // setup_modbus();
     Serial.begin(9600);
 
-    // Set up the relevant libraries.
+    // Set up the relevant functions.
     setup_wifi();
     setup_websocket();
     setup_modbus();
