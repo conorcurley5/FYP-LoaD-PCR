@@ -25,8 +25,8 @@ AsyncWebSocket& get_websocket_instance()
 // Put in network credentials
 // Probably shouldn't be out on the internet but sure, whoops.
 // TODO: Store these in an environment variable instead for security.
-const char* ssid = "Whitehouse Wi-Fi";
-const char* password = "Whitehouse08!";
+const char* ssid = "";
+const char* password = "";
 
 // Connect to WiFi
 void setup_wifi() {
