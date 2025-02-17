@@ -22,7 +22,9 @@ AsyncWebSocket& get_websocket_instance()
     return ws;
 }
 
-// Replace with your network credentials
+// Put in network credentials
+// Probably shouldn't be out on the internet but sure, whoops.
+// TODO: Store these in an environment variable instead for security.
 const char* ssid = "Whitehouse Wi-Fi";
 const char* password = "Whitehouse08!";
 
@@ -44,8 +46,10 @@ void notify_clients(String sensorReadings) {
 
 // Handle an incoming request from the master.
 void handle_command(char* buffer) {
+  // Get the character length of the command
   int howMany = strlen(buffer);
 
+  // Find the index of the equals sign
   int index = -1;
 
   for (int i = 0; i < howMany; i++) {
@@ -54,14 +58,17 @@ void handle_command(char* buffer) {
     }
   }
 
+  // Return if you cant find an =, request is malformed.
   if (index == -1) return;
 
+  // Split the request into an action (i.e what are you requesting, e.g. SET_MOTOR_SPEED) and a payload (i.e. the value, e.g. 3000)
   char action[index + 1];
   char payload[howMany-index];
 
   for (int i = 0; i < index; i++) {
     action[i] = buffer[i];
   }
+  // Terminate the strings
   action[index] = '\0';
     
   for (int i = index + 1; i < howMany; i++) {
@@ -69,6 +76,8 @@ void handle_command(char* buffer) {
   }
   payload[howMany - index - 1] = '\0';
   
+  // Process the actions using IF/ELSE
+  // C++ cannot do SWITCH statements on strings FML.
   if (strcmp(action, "SET_MTR_SPD") == 0) {
     int speed = parseInt(payload);
     set_motor_speed(speed);
@@ -104,12 +113,15 @@ void handle_command(char* buffer) {
   }
 }
 
+// When a message is recieved, handle it
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
+  // boilerplate code from the developer
   AwsFrameInfo *info = (AwsFrameInfo*)arg;
 
   if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
     data[len] = 0;
 
+    // Send data to our function above
     handle_command((char*)data);
   }
 }
